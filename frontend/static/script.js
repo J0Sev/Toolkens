@@ -1,22 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Toolkens</title>
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
-    <h1>Toolkens Image Organizer</h1>
+const form = document.getElementById("uploadForm");
 
-    <form id="uploadForm">
-        <input type="file" name="images" multiple />
-        <button type="submit">Upload</button>
-    </form>
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-    <button onclick="loadImages()">View Images</button>
-    <button onclick="loadGrouped()">View Grouped</button>
+    const formData = new FormData(form);
 
-    <div id="output"></div>
+    await fetch("/upload", {
+        method: "POST",
+        body: formData
+    });
 
-    <script src="/static/script.js"></script>
-</body>
-</html>
+    alert("Upload complete!");
+});
+
+async function loadImages() {
+    const res = await fetch("/images");
+    const data = await res.json();
+    document.getElementById("output").innerText =
+        JSON.stringify(data, null, 2);
+}
+
+async function loadGrouped() {
+    const res = await fetch("/grouped");
+    const data = await res.json();
+    document.getElementById("output").innerText =
+        JSON.stringify(data, null, 2);
+}
