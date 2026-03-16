@@ -8,7 +8,12 @@ from sorting_service import SortingService
 from feedback_service import FeedbackService
 from models import ImageStore
 
-app = Flask(__name__)
+ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png"}
+
+def allowed_file(filename):
+    return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+
+app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
 CORS(app)
 
 app.config['UPLOAD_FOLDER'] = Config.UPLOAD_FOLDER
@@ -28,8 +33,16 @@ def home():
 @app.route("/upload", methods=["POST"])
 def upload_images():
     files = request.files.getlist("images")
+    results = []
 
     for file in files:
+        if not file or file.filename == "":
+            continue
+
+        if not allowed_file(file.filename):
+            results.append({"filename": file.filename, "error": "Unsupported file type"})
+            continue
+
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
 
@@ -37,8 +50,12 @@ def upload_images():
             labels = rekognition_service.detect_labels(img.read())
 
         image_store.add_image(file.filename, labels)
+        results.append({"filename": file.filename, "labels": labels})
 
-    return jsonify({"message": "Upload complete"})
+    return jsonify({
+        "message": "Upload complete",
+        "results": results
+    })
 
 @app.route("/images", methods=["GET"])
 def get_images():
@@ -46,9 +63,7 @@ def get_images():
 
 @app.route("/grouped", methods=["GET"])
 def get_grouped():
-    grouped = sorting_service.group_by_primary_label(
-        image_store.get_all()
-    )
+    grouped = sorting_service.group_by_primary_label(image_store.get_all())
     return jsonify(grouped)
 
 @app.route("/feedback", methods=["POST"])

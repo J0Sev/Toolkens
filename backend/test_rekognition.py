@@ -1,11 +1,8 @@
-import boto3
+from rekognition_service import RekognitionService
 
-client = boto3.client("rekognition")
+service = RekognitionService()
 
-with open("test.jpg", "rb") as img:
-    response = client.detect_labels(
-        Image={"Bytes": img.read()},
-        MaxLabels=5
-    )
+with open("../uploads/sample.jpg", "rb") as f:
+    labels = service.detect_labels(f.read())
 
-print(response["Labels"])
+print(labels)
