@@ -1,12 +1,12 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-import os
 
 from config import Config
 from rekognition_service import RekognitionService
 from sorting_service import SortingService
 from feedback_service import FeedbackService
 from models import ImageStore
+from s3_service import S3Service
 
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png"}
 
@@ -16,15 +16,11 @@ def allowed_file(filename):
 app = Flask(__name__, template_folder="../frontend/templates", static_folder="../frontend/static")
 CORS(app)
 
-app.config['UPLOAD_FOLDER'] = Config.UPLOAD_FOLDER
-
+s3_service = S3Service(Config.S3_BUCKET)
 rekognition_service = RekognitionService()
 sorting_service = SortingService()
 feedback_service = FeedbackService()
 image_store = ImageStore()
-
-if not os.path.exists(Config.UPLOAD_FOLDER):
-    os.makedirs(Config.UPLOAD_FOLDER)
 
 @app.route("/")
 def home():
@@ -40,17 +36,25 @@ def upload_images():
             continue
 
         if not allowed_file(file.filename):
-            results.append({"filename": file.filename, "error": "Unsupported file type"})
+            results.append({
+                "filename": file.filename,
+                "error": "Unsupported file type"
+            })
             continue
 
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-        file.save(filepath)
+        key = s3_service.upload_file(file)
 
-        with open(filepath, "rb") as img:
-            labels = rekognition_service.detect_labels(img.read())
+        labels = rekognition_service.detect_labels_s3(
+            Config.S3_BUCKET,
+            key
+        )
 
-        image_store.add_image(file.filename, labels)
-        results.append({"filename": file.filename, "labels": labels})
+        image_store.add_image(key, labels)
+
+        results.append({
+            "filename": key,
+            "labels": labels
+        })
 
     return jsonify({
         "message": "Upload complete",

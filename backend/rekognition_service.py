@@ -8,18 +8,22 @@ class RekognitionService:
             region_name=Config.AWS_REGION
         )
 
-    def detect_labels(self, image_bytes):
+    def detect_labels_s3(self, bucket, key):
         response = self.client.detect_labels(
-            Image={'Bytes': image_bytes},
+            Image={
+                "S3Object": {
+                    "Bucket": bucket,
+                    "Name": key
+                }
+            },
             MaxLabels=10,
             MinConfidence=75
         )
 
-        labels = []
-        for label in response['Labels']:
-            labels.append({
+        return [
+            {
                 "name": label["Name"],
                 "confidence": round(label["Confidence"], 2)
-            })
-            
-        return labels
+            }
+            for label in response["Labels"]
+        ]

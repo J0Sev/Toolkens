@@ -8,5 +8,5 @@ PROJECT_ROOT = os.path.dirname(BASE_DIR)
 
 class Config:
     AWS_REGION = os.getenv("AWS_REGION", "us-east-2")
-    UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, "uploads")
+    S3_BUCKET = os.getenv("S3_BUCKET", "toolkens-images-linj27")
     
