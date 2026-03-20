@@ -49,11 +49,14 @@ def upload_images():
             key
         )
 
-        image_store.add_image(key, labels)
+        image_url = s3_service.generate_presigned_url(key)
+
+        image_store.add_image(key, labels, image_url)
 
         results.append({
             "filename": key,
-            "labels": labels
+            "labels": labels,
+            "image_url": image_url
         })
 
     return jsonify({

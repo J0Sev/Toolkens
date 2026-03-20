@@ -14,3 +14,13 @@ class S3Service:
 
         return key
 
+    def generate_presigned_url(self, key, expiration = 3600):
+        return self.s3.generate_presigned_url(
+            "get_object",
+            Params = {
+                "Bucket": self.bucket_name,
+                "Key": key
+            },
+            ExpiresIn = expiration
+        )
+
