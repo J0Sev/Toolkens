@@ -1,8 +1,34 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     padding: 20px;
 }
 
 button {
     margin-top: 10px;
+    margin-right: 10px;
+}
+
+#output {
+    margin-top: 20px;
+}
+
+.image-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+    max-width: 400px;
+}
+
+.preview-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin: 10px 0;
+    border-radius: 6px;
+}
+
+.group-section {
+    margin-bottom: 30px;
 }
