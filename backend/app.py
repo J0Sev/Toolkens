@@ -83,5 +83,14 @@ def feedback():
     )
     return jsonify({"message": "Feedback recorded"})
 
+@app.route("/delete/<int:image_id>", methods=["DELETE"])
+def delete_image(image_id):
+    image = image_store.delete_image(image_id)
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+
+    s3_service.delete_file(image["filename"])
+    return jsonify({"message": "Image deleted", "id": image_id})
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -23,4 +23,8 @@ class S3Service:
             },
             ExpiresIn = expiration
         )
+    
+    def delete_file(self, key):
+        self.s3.delete_object(Bucket = self.bucket_name, Key = key)
+        
 

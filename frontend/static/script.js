@@ -26,6 +26,17 @@ async function loadGrouped() {
     renderGrouped(data);
 }
 
+async function deleteImage(imageId, cardElement) {
+    if (!confirm("Delete this image?")) return;
+
+    const res = await fetch(`/delete/${imageId}`, { method: "DELETE" });
+    if (res.ok) {
+        cardElement.remove();
+    } else {
+        alert("Failed to delete image.");
+    }
+}
+
 function renderImages(images) {
     const output = document.getElementById("output");
     output.innerHTML = "";
@@ -46,10 +57,16 @@ function renderImages(images) {
         labels.textContent = image.labels
             .map(label => `${label.name} (${label.confidence}%)`)
             .join(", ");
+        
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.onclick = () => deleteImage(image.id, card);
 
         card.appendChild(title);
         card.appendChild(img);
         card.appendChild(labels);
+        card.appendChild(deleteBtn);
 
         output.appendChild(card);
     });
@@ -84,9 +101,15 @@ function renderGrouped(groupedData) {
                 .map(label => `${label.name} (${label.confidence}%)`)
                 .join(", ");
 
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "Delete";
+            deleteBtn.className = "delete-btn";
+            deleteBtn.onclick = () => deleteImage(image.id, card);
+            
             card.appendChild(title);
             card.appendChild(img);
             card.appendChild(labels);
+            card.appendChild(deleteBtn);
 
             section.appendChild(card);
         });
