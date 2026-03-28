@@ -19,3 +19,11 @@ class ImageStore:
             self.images = [img for img in self.images if img["id"] != image_id]
             return image
         return None
+
+    def reassign_label(self, image_id, new_label):
+        for img in self.images:
+            if img["id"] == image_id:
+                other_labels = [l for l in img["labels"] if l["name"] != new_label]
+                img["labels"] = [{"name": new_label, "confidence": 100.0}] + other_labels
+                return img
+        return None

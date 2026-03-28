@@ -52,8 +52,10 @@ def upload_images():
         image_url = s3_service.generate_presigned_url(key)
 
         image_store.add_image(key, labels, image_url)
+        stored = image_store.images[-1]
 
         results.append({
+            "id": stored["id"],
             "filename": key,
             "labels": labels,
             "image_url": image_url
@@ -91,6 +93,21 @@ def delete_image(image_id):
 
     s3_service.delete_file(image["filename"])
     return jsonify({"message": "Image deleted", "id": image_id})
+
+@app.route("/reassign", methods=["POST"])
+def reassign_image():
+    data = request.json
+    image_id = data.get("image_id")
+    new_label = data.get("new_label", "").strip()
+
+    if image_id is None or not new_label:
+        return jsonify({"error": "image_id and new_label are required"}), 400
+
+    updated = image_store.reassign_label(image_id, new_label)
+    if not updated:
+        return jsonify({"error": "Image not found"}), 404
+
+    return jsonify({"message": "Label reassigned", "image": updated})
 
 if __name__ == "__main__":
     app.run(debug=True)
