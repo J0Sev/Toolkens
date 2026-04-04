@@ -153,3 +153,62 @@ function buildCard(image, groupNames) {
  
     return card;
 }
+
+async function getGroupNames() {
+    const imagesRes = await fetch("/images");
+    const allImages = await imagesRes.json();
+    return [...new Set(allImages.flatMap(img => img.labels.map(l => l.name)))];
+}
+ 
+async function renderImages(images) {
+    const output = document.getElementById("output");
+    output.innerHTML = "";
+ 
+    if (!images.length) {
+        output.innerHTML = '<div class="empty-state"><p>No images uploaded yet.</p></div>';
+        return;
+    }
+ 
+    const groupNames = await getGroupNames();
+    const grid = document.createElement("div");
+    grid.className = "image-grid";
+    images.forEach(image => grid.appendChild(buildCard(image, groupNames)));
+    output.appendChild(grid);
+}
+ 
+async function renderGrouped(groupedData) {
+    const output = document.getElementById("output");
+    output.innerHTML = "";
+ 
+    const groupNames = await getGroupNames();
+    const keys = Object.keys(groupedData);
+ 
+    if (!keys.length) {
+        output.innerHTML = '<div class="empty-state"><p>No groups yet. Upload some images first.</p></div>';
+        return;
+    }
+ 
+    for (const groupName of keys) {
+        const section = document.createElement("div");
+        section.className = "group-section";
+ 
+        const heading = document.createElement("div");
+        heading.className = "group-heading";
+        const name = document.createElement("h2");
+        name.className = "group-name";
+        name.textContent = groupName;
+        const count = document.createElement("span");
+        count.className = "group-count";
+        count.textContent = `${groupedData[groupName].length} image${groupedData[groupName].length !== 1 ? "s" : ""}`;
+        heading.appendChild(name);
+        heading.appendChild(count);
+ 
+        const grid = document.createElement("div");
+        grid.className = "image-grid";
+        groupedData[groupName].forEach(image => grid.appendChild(buildCard(image, groupNames)));
+ 
+        section.appendChild(heading);
+        section.appendChild(grid);
+        output.appendChild(section);
+    }
+}
