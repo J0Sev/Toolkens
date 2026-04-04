@@ -11,19 +11,19 @@ form.addEventListener("submit", async (e) => {
     });
 
     const data = await res.json();
-    renderImages(data.results || []);
+    await renderImages(data.results || []);
 });
 
 async function loadImages() {
     const res = await fetch("/images");
     const data = await res.json();
-    renderImages(data);
+    await renderImages(data);
 }
 
 async function loadGrouped() {
     const res = await fetch("/grouped");
     const data = await res.json();
-    renderGrouped(data);
+    await renderGrouped(data);
 }
 
 async function deleteImage(imageId, cardElement) {
@@ -55,9 +55,9 @@ async function renderImages(images) {
     const output = document.getElementById("output");
     output.innerHTML = "";
 
-    const groupRes = await fetch("/grouped");
-    const groupedData = await groupRes.json();
-    const groupNames = Object.keys(groupedData);
+    const imagesRes = await fetch("/images");
+    const allImages = await imagesRes.json();
+    const groupNames = [...new Set(allImages.flatMap(img => img.labels.map(l => l.name)))];
 
     images.forEach(image => {
         const card = document.createElement("div");
@@ -116,6 +116,12 @@ async function renderImages(images) {
 async function renderGrouped(groupedData) {
     const output = document.getElementById("output");
     output.innerHTML = "";
+
+    const groupRes = await fetch("/grouped");
+    const freshGrouped = await groupRes.json();
+    const imagesRes = await fetch("/images");
+    const allImages = await imagesRes.json();
+    const groupNames = [...new Set(allImages.flatMap(img => img.labels.map(l => l.name)))];
 
     for (const groupName in groupedData) {
         const section = document.createElement("div");

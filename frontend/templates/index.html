@@ -1,22 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Toolkens</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Toolkens Image Organizer</h1>
-
-    <form id="uploadForm">
-        <input type="file" name="images" multiple />
-        <button type="submit">Upload</button>
-    </form>
-
-    <button onclick="loadImages()">View Images</button>
-    <button onclick="loadGrouped()">View Grouped</button>
-
-    <div id="output"></div>
-
+ 
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-text">Toolkens</span>
+            </div>
+            <p class="tagline">Image Organization Tool</p>
+        </div>
+    </header>
+ 
+    <main>
+        <section class="upload-section">
+            <div class="upload-card">
+                <div class="upload-icon">↑</div>
+                <p class="upload-label">Drop images here or click to browse</p>
+                <p class="upload-sub">JPG, JPEG, PNG supported</p>
+                <form id="uploadForm">
+                    <label class="file-label">
+                        <input type="file" name="images" multiple accept=".jpg,.jpeg,.png" id="fileInput" />
+                        <span id="fileCount">No files selected</span>
+                    </label>
+                    <button type="submit" class="btn-primary">Upload & Analyze</button>
+                </form>
+            </div>
+        </section>
+ 
+        <section class="controls">
+            <button class="btn-view active" id="btnImages" onclick="handleLoadImages()">
+                <span class="btn-icon"></span> All Images
+            </button>
+            <button class="btn-view" id="btnGrouped" onclick="handleLoadGrouped()">
+                <span class="btn-icon"></span> By Group
+            </button>
+        </section>
+ 
+        <div id="status" class="status hidden"></div>
+ 
+        <div id="output"></div>
+    </main>
+ 
     <script src="/static/script.js"></script>
 </body>
 </html>
