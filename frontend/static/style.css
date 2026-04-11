@@ -383,3 +383,46 @@ main {
     color: var(--danger);
     background: #fdf2f2;
 }
+
+.group-section {
+    margin-bottom: 48px;
+}
+ 
+.group-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+ 
+.group-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--text-primary);
+    letter-spacing: -0.3px;
+}
+ 
+.group-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 10px;
+    font-weight: 400;
+}
+ 
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+}
+ 
+.empty-state p { font-size: 15px; }
+ 
+@media (max-width: 640px) {
+    .header-inner { padding: 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .tagline { border-left: none; padding-left: 0; }
+    main { padding: 24px 16px 60px; }
+    .image-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+}
