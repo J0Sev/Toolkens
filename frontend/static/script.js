@@ -104,7 +104,25 @@ function buildCard(image, groupNames) {
     image.labels.forEach((label, i) => {
         const tag = document.createElement("span");
         tag.className = "label-tag" + (i === 0 ? " primary" : "");
-        tag.textContent = `${label.name} ${label.confidence}%`;
+
+        const labelText = document.createElement("span");
+        labelText.textContent = `${label.name} ${label.confidence}%`;
+
+        const acceptBtn = document.createElement("button");
+        acceptBtn.textContent = "✓";
+        acceptBtn.className = "feedback-btn accept";
+        acceptBtn.title = "Confirm label";
+        acceptBtn.onclick = () => sendFeedback(image.id, label.name, true, tag);
+
+        const rejectBtn = document.createElement("button");
+        rejectBtn.textContent = "✕";
+        rejectBtn.className = "feedback-btn reject";
+        rejectBtn.title = "Reject label";
+        rejectBtn.onclick = () => sendFeedback(image.id, label.name, false, tag);
+
+        tag.appendChild(labelText);
+        tag.appendChild(acceptBtn);
+        tag.appendChild(rejectBtn);
         labelsWrap.appendChild(tag);
     });
  

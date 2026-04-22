@@ -426,3 +426,39 @@ main {
     main { padding: 24px 16px 60px; }
     .image-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
 }
+
+.label-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.feedback-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 10px;
+    padding: 0 2px;
+    line-height: 1;
+    opacity: 0.4;
+    transition: opacity 0.15s, color 0.15s;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.feedback-btn:hover { opacity: 1; }
+.feedback-btn.accept:hover { color: #2e7d32; }
+.feedback-btn.reject:hover { color: var(--danger); }
+
+.label-tag.accepted {
+    background: #e8f5e9;
+    border-color: #a5d6a7;
+    color: #2e7d32;
+}
+
+.label-tag.rejected {
+    background: #fdf2f2;
+    border-color: #f5c6c6;
+    color: var(--danger);
+    text-decoration: line-through;
+    opacity: 0.6;
+}

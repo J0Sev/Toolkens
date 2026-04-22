@@ -72,7 +72,10 @@ def get_images():
 
 @app.route("/grouped", methods=["GET"])
 def get_grouped():
-    grouped = sorting_service.group_by_primary_label(image_store.get_all())
+    grouped = sorting_service.group_by_primary_label(
+        image_store.get_all(),
+        feedback_service.get_feedback()
+    )
     return jsonify(grouped)
 
 @app.route("/feedback", methods=["POST"])
