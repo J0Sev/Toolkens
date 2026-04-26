@@ -112,5 +112,13 @@ def reassign_image():
 
     return jsonify({"message": "Label reassigned", "image": updated})
 
+@app.route("/delete-all", methods=["DELETE"])
+def delete_all_images():
+    images = image_store.get_all().copy()
+    for image in images:
+        s3_service.delete_file(image["filename"])
+    image_store.images.clear()
+    return jsonify({"message": f"Deleted {len(images)} images"})
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, use_reloader=False)

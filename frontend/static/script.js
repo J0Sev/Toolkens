@@ -2,6 +2,7 @@ const form = document.getElementById("uploadForm");
 const fileInput = document.getElementById("fileInput");
 const fileCount = document.getElementById("fileCount");
 const statusEl = document.getElementById("status");
+const feedbackState = {};
  
 fileInput.addEventListener("change", () => {
     const n = fileInput.files.length;
@@ -104,6 +105,13 @@ function buildCard(image, groupNames) {
     image.labels.forEach((label, i) => {
         const tag = document.createElement("span");
         tag.className = "label-tag" + (i === 0 ? " primary" : "");
+
+        const savedFeedback = feedbackState[image.id];
+        if (savedFeedback && savedFeedback[label.name] === true) {
+            tag.classList.add("accepted");
+        } else if (savedFeedback && savedFeedback[label.name] === false) {
+            tag.classList.add("rejected");
+        }
 
         const labelText = document.createElement("span");
         labelText.textContent = `${label.name} ${label.confidence}%`;
@@ -228,5 +236,32 @@ async function renderGrouped(groupedData) {
         section.appendChild(heading);
         section.appendChild(grid);
         output.appendChild(section);
+    }
+}
+
+async function sendFeedback(imageId, label, accepted, tagElement) {
+    const res = await fetch("/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_id: imageId, label: label, accepted: accepted })
+    });
+
+    if (res.ok) {
+        if (!feedbackState[imageId]) feedbackState[imageId] = {};
+        feedbackState[imageId][label] = accepted;
+        await loadGrouped();
+        setActive("btnGrouped");
+    } else {
+        alert("Failed to record feedback.");
+    }
+}
+
+async function deleteAll() {
+    if (!confirm("Delete all images? This cannot be undone.")) return;
+    const res = await fetch("/delete-all", { method: "DELETE" });
+    if (res.ok) {
+        document.getElementById("output").innerHTML = "";
+    } else {
+        alert("Failed to delete all images.");
     }
 }

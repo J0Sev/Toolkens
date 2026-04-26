@@ -4,6 +4,7 @@ class FeedbackService:
         self.feedback_log = {}
 
     def record_feedback(self, image_id, label, accepted=True):
+        image_id = int(image_id)
         if image_id not in self.feedback_log:
             self.feedback_log[image_id] = {}
 

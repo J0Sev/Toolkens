@@ -462,3 +462,15 @@ main {
     text-decoration: line-through;
     opacity: 0.6;
 }
+
+.btn-delete-all {
+    margin-left: auto;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn-delete-all:hover {
+    background: #fdf2f2;
+    border-color: var(--danger);
+    color: var(--danger);
+}
