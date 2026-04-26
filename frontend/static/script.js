@@ -133,7 +133,7 @@ function buildCard(image, groupNames) {
         tag.appendChild(rejectBtn);
         labelsWrap.appendChild(tag);
     });
- 
+
     // Actions
     const actions = document.createElement("div");
     actions.className = "card-actions";
@@ -172,6 +172,27 @@ function buildCard(image, groupNames) {
  
     body.appendChild(filename);
     body.appendChild(labelsWrap);
+
+    const addLabelWrapper = document.createElement("div");
+    addLabelWrapper.className = "add-label-wrapper";
+
+    const labelInput = document.createElement("input");
+    labelInput.type = "text";
+    labelInput.placeholder = "Add custom tag...";
+    labelInput.className = "add-label-input";
+
+    const addLabelBtn = document.createElement("button");
+    addLabelBtn.textContent = "Add Tag";
+    addLabelBtn.className = "btn-add-label";
+    addLabelBtn.onclick = () => addCustomLabel(image.id, labelInput, labelsWrap, groupNames);
+
+    labelInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addCustomLabel(image.id, labelInput, labelsWrap, groupNames);
+    });
+
+    addLabelWrapper.appendChild(labelInput);
+    addLabelWrapper.appendChild(addLabelBtn);
+    body.appendChild(addLabelWrapper);
     body.appendChild(actions);
  
     card.appendChild(imageWrap);
@@ -263,5 +284,24 @@ async function deleteAll() {
         document.getElementById("output").innerHTML = "";
     } else {
         alert("Failed to delete all images.");
+    }
+}
+
+async function addCustomLabel(imageId, inputElement, cardLabelsElement, groupNames) {
+    const newLabel = inputElement.value.trim();
+    if (!newLabel) { alert("Please enter a label name."); return; }
+
+    const res = await fetch("/add-label", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image_id: imageId, label: newLabel })
+    });
+
+    if (res.ok) {
+        inputElement.value = "";
+        await loadGrouped();
+        setActive("btnGrouped");
+    } else {
+        alert("Failed to add label.");
     }
 }

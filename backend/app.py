@@ -120,5 +120,20 @@ def delete_all_images():
     image_store.images.clear()
     return jsonify({"message": f"Deleted {len(images)} images"})
 
+@app.route("/add-label", methods=["POST"])
+def add_label():
+    data = request.json
+    image_id = data.get("image_id")
+    new_label = data.get("label", "").strip()
+
+    if image_id is None or not new_label:
+        return jsonify({"error": "image_id and label are required"}), 400
+
+    updated = image_store.add_label(image_id, new_label)
+    if not updated:
+        return jsonify({"error": "Image not found"}), 404
+
+    return jsonify({"message": "Label added", "image": updated})
+
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=False)

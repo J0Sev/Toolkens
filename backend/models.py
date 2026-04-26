@@ -27,3 +27,12 @@ class ImageStore:
                 img["labels"] = [{"name": new_label, "confidence": 100.0}] + other_labels
                 return img
         return None
+    
+    def add_label(self, image_id, new_label):
+        for img in self.images:
+            if img["id"] == image_id:
+                existing = [l["name"] for l in img["labels"]]
+                if new_label not in existing:
+                    img["labels"].append({"name": new_label, "confidence": 100.0})
+                return img
+        return None

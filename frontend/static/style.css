@@ -474,3 +474,46 @@ main {
     border-color: var(--danger);
     color: var(--danger);
 }
+
+.add-label-wrapper {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.add-label-input {
+    flex: 1;
+    padding: 5px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-primary);
+    background: var(--bg);
+    transition: border-color 0.2s;
+}
+
+.add-label-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.btn-add-label {
+    padding: 5px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.btn-add-label:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-light);
+}
